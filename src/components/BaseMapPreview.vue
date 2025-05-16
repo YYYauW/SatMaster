@@ -4,7 +4,7 @@
   </BasePanel>
 </template>
 <script setup lang="ts">
-  import { onMounted, ref } from "@vue/runtime-core"
+  import { onMounted, ref } from "vue"
   import { useMap } from "@/hooks/useMap"
   import * as L from "leaflet"
   import BasePanel from "@/components/BasePanel.vue"

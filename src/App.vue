@@ -66,7 +66,10 @@
   <p>经纬度: ({{ selectedParetoRow.FieldLat }}, {{ selectedParetoRow.FieldLng }})</p>
 </div>
 
-
+<div id="app">
+    <!-- 原页面内容 -->
+    <RightInputPanel @submit-params="handleParamSubmit" />
+  </div>
 
 </template>
 
@@ -81,6 +84,14 @@ import BasePanel from "@/components/BasePanel.vue"
 import BaseTutorial from "@/components/BaseTutorial.vue"
 import ParetoDialog from "@/components/ParetoDialog.vue"
 import { ref, onMounted } from "vue"
+import RightInputPanel from '@/components/RightInputPanel.vue'
+
+
+const handleParamSubmit = (paramString: string) => {
+  console.log('提交的参数为:', paramString)
+}
+
+
 
 const paretoRef = ref()
 const selectedParetoRow = ref<any | null>(null)
@@ -110,6 +121,8 @@ const flightParams1 = ref()
 const flightParams2 = ref()
 const applyParetoResult = ref()
 const clearTrajectory = ref()
+
+const paramConfig = ref(null)
 
 
 const runExe = async () => {
@@ -152,10 +165,6 @@ onMounted(() => {
 
 
 
-
-
-
-// 点击触发
 const trigerClick = ()=> {
   paretoRef?.show()
 }

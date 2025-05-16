@@ -14,7 +14,7 @@
     "cesium": "^1.98.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "leaflet": "^1.9.2",
+    "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
     "postcss": "^8.4.18",
     "postcss-html": "^1.5.0",
@@ -24,13 +24,12 @@
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-standard": "^29.0.0",
     "stylelint-config-standard-scss": "^5.0.0",
-    "vite-plugin-html": "^3.2.0",
     "vue": "^3.2.38",
     "vue-eslint-parser": "^9.1.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
-    "@types/leaflet": "^1.9.0",
+    "@types/leaflet": "^1.9.17",
     "@types/node": "^16.11.68",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vitejs/plugin-vue-jsx": "^2.0.1",
@@ -45,6 +44,7 @@
     "vite": "^3.0.9",
     "vite-advance-api": "^1.0.18",
     "vite-plugin-cesium": "^1.2.22",
+    "vite-plugin-html": "^3.2.2",
     "vue-tsc": "^0.40.7"
   }
 }
