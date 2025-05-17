@@ -35,61 +35,47 @@ export default ({ mode }: any) => {
             type: "direct",
             base: "/aaa",
             setup: (router) => {
+
               // 运行指定的exe文件
               router.get("startexe", async (req, res) => {
                 try {
-                  // 从查询参数获取要运行的exe文件名
                   const exeName = req.query.exe || "TOS-MS.exe";
-                  const runAsAdmin = req.query.admin === "true";
-  
-                  // 获取exe文件路径
+                  const inputStr = req.query.input || "";  // ← 前端传来的字符串参数
                   const exePath = path.resolve(__dirname, exeName);
-  
-                  // 输出调试信息
-                  console.log("运行信息:", {
-                    当前工作目录: process.cwd(),
-                    目标程序: exeName,
-                    完整路径: exePath,
-                    管理员权限: runAsAdmin,
-                  });
-  
-                  // 检查文件是否存在
+                  const exeDir = path.dirname(exePath);
+                  const batPath = path.resolve(__dirname, "run_exe.bat");
+              
+                  // 检查exe是否存在
                   if (!fs.existsSync(exePath)) {
-                    console.error(`文件不存在: ${exePath}`);
                     return res.error({
                       message: `找不到执行文件: ${exeName}`,
                       code: 404,
                     });
                   }
-  
-                  // 构建命令
-                  let command;
-                  if (runAsAdmin) {
-                    // 使用 start 命令在新窗口中以管理员权限运行
-                    command = `start powershell.exe -NoExit -Command "Start-Process '${exePath}' -Verb RunAs; Read-Host 'Press Enter to exit'"`;
-                  } else {
-                    // 使用 start 命令在新窗口中运行，并保持窗口打开
-                    command = `start cmd.exe /K "echo 正在运行 ${exeName}... && "${exePath}" && echo. && echo 程序已退出，按任意键关闭窗口"`;
-                  }
-  
+              
+                  // 生成 .bat 内容
+                  const batContent = `@echo off\r\necho ${inputStr} | "${exePath}"\r\npause`;
+              
+                  fs.writeFileSync(batPath, batContent);
+              
+                  // 构造 start 命令，打开.bat（弹窗）
+                  const command = `start "" "${batPath}"`;
+              
                   console.log("执行命令:", command);
-  
-                  // 执行命令
-                  const child = spawn(command, [], {
+              
+                  spawn(command, {
                     shell: true,
-                    cwd: path.dirname(exePath),
-                    env: { ...process.env },
+                    cwd: exeDir,
+                    detached: true,
                     windowsHide: false,
-                    detached: true, // 使子进程独立运行
                   });
-  
-                  // 立即返回成功响应
+              
                   res.success({
-                    message: "正在启动程序，请查看新打开的窗口",
-                    command: command,
+                    message: "已在新窗口运行 exe 并自动输入参数",
+                    command,
                   });
                 } catch (err) {
-                  console.error("执行过程发生异常:", err);
+                  console.error("执行异常:", err);
                   res.error({
                     message: `系统错误: ${err.message}`,
                     code: 500,
@@ -97,7 +83,7 @@ export default ({ mode }: any) => {
                   });
                 }
               });
-  
+              
               // 列出可用的exe文件
               router.get("listexe", async (req, res) => {
                 try {
@@ -116,6 +102,8 @@ export default ({ mode }: any) => {
                   });
                 }
               });
+
+
             },
           },
         ],

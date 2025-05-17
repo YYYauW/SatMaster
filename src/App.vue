@@ -27,7 +27,7 @@
   
 
     </BasePanel>
-    <BasePanel :data1="flightParams1" :data2="flightParams2" title="卫星控制面板" />
+    <!-- <BasePanel :data1="flightParams1" :data2="flightParams2" title="卫星控制面板" /> -->
 
     <div class="tutorial-container">
       <BaseTutorial />
@@ -51,6 +51,8 @@
     </div>
 
 
+    
+
   </div>
 
 <!-- 右侧信息展示框 -->
@@ -68,7 +70,11 @@
 
 <div id="app">
     <!-- 原页面内容 -->
-    <RightInputPanel @submit-params="handleParamSubmit" />
+    <!-- <RightInputPanel @submit-params="handleParamSubmit" @update:inputStr="inputStr = $event"/> -->
+    <RightInputPanel @update:inputStr="inputStr = $event"/>
+
+    <!-- <RightInputPanel @update:inputStr="inputStr = $event" /> -->
+
   </div>
 
 </template>
@@ -124,17 +130,40 @@ const clearTrajectory = ref()
 
 const paramConfig = ref(null)
 
-
+const inputStr = ref("");
+console.log(inputStr);
 const runExe = async () => {
   try {
-    const res = await axios.get("/api/aaa/startexe")
+    const res = await axios.get("/api/aaa/startexe", {
+      params: {
+        exe: "TOS-MS.exe",
+        input: inputStr.value
+        }
+    });
     console.log(res);
-    
     output.value = res.data.output
   } catch (err) {
-    output.value = "运行失败: " + err.message
+    output.value = "运行失败: " + (err as Error).message
   }
 }
+
+
+
+
+
+
+// const runExe1 = async () => {
+//   const res = await fetch("http://localhost:3000/api/run-exe", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ input: inputStr.value })
+//   });
+//   alert(await res.text());
+// }
+
+
+
+
 
 const init = async () => {
   const { viewer } = await useCesium(app)

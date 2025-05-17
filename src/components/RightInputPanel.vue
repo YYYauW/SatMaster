@@ -1,9 +1,9 @@
 <template>
   <div class="right-panel">
     <h3>优化参数配置</h3>
-    <p v-if="combinedResult" class="result">
+    <!-- <p v-if="combinedResult" class="result">
       参数组合结果：{{ combinedResult }}
-    </p>
+    </p> -->
     <label>基准星参数：</label>
     <input type="text" v-model="satA" placeholder="路径如 D:\\xxx\\SatA.o" />
 
@@ -30,20 +30,52 @@
 
 <script setup>
 import { ref } from 'vue'
-const emit = defineEmits(['submit-params'])
+const emit = defineEmits(['update:inputStr'])
 
 const satA = ref('D:\\Conda_data\\MF-UAV-master\\src\\assets\\input\\SatAToTLE.o')
 const satB = ref('D:\\Conda_data\\MF-UAV-master\\src\\assets\\input\\SatBToTLE.o')
-const calibField = ref('D:\\Conda_data\\MF-UAV-master\\src\\assets\input\\Steady-statePt.t')
-const populationSize = ref(40)
-const iterations = ref(400)
+const calibField = ref('D:\\Conda_data\\MF-UAV-master\\src\\assets\\input\\Steady-statePt.t')
+const populationSize = ref(5)
+const iterations = ref(10)
 const combinedResult = ref('')
 
-const submitParams = () => {
-  combinedResult.value = `"${satA.value}","${satB.value}","${calibField.value}","${populationSize.value}","${iterations.value}"`
-  alert('参数已组合完成！')
-  emit('submit-params', combinedResult.value)
+// const submitParams = () => {
+//   combinedResult.value = `"${satA.value}","${satB.value}","${calibField.value}","${populationSize.value}","${iterations.value}"`
+//   alert('参数已组合完成！')
+//   emit('submit-params', combinedResult.value)
+// }
+
+
+
+// 在 RightInputPanel.vue 的 submitParams 方法里添加 POST 请求
+import axios from 'axios'
+
+const submitParams = async () => {
+  combinedResult.value = `${satA.value},${satB.value},${calibField.value},${populationSize.value},${iterations.value}`
+  try {
+    await navigator.clipboard.writeText(combinedResult.value);
+    console.log('参数已复制到剪贴板：', combinedResult.value);
+  } catch (err) {
+    console.error('复制失败:', err);
+  }
+  
+  alert('参数已复制到粘贴版！')
+
+  const combined = `${satA.value},${satB.value},${calibField.value},${populationSize.value},${iterations.value}`;
+  emit("update:inputStr", combined); // 发给父组件
+
+  // try {
+  //   const res = await axios.post('/api/run-exe', {
+  //     exePath: 'TOS-MS.exe',
+  //     input: combinedResult.value,
+  //   })
+  //   console.log('启动成功', res.data)
+  // } catch (err) {
+  //   console.error('启动失败', err)
+  // }
+
 }
+
 
 </script>
 

@@ -1,4 +1,4 @@
-/* Source/Widgets/Viewer/Viewer.css */
+/* packages/widgets/Source/Viewer/Viewer.css */
 .cesium-viewer {
   font-family: sans-serif;
   font-size: 16px;
@@ -86,6 +86,16 @@
   margin: 0 3px;
 }
 .cesium-viewer-cesium3DTilesInspectorContainer {
+  display: block;
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  max-height: calc(100% - 120px);
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.cesium-viewer-voxelInspectorContainer {
   display: block;
   position: absolute;
   top: 50px;
